@@ -1,0 +1,53 @@
+const moment = require('moment-timezone');
+
+module.exports = {
+  title: 'Press',
+  base: '/test-press/',
+  head: [
+    ['link', { rel: 'icon', href: '/favicon.png' }],
+  ],
+  themeConfig: {
+    nav: #nav#,
+    sidebar: #sidebar#,
+    search: true,
+    searchMaxSuggestions: 10,
+    smoothScroll: true,
+  },
+  plugins: {
+    '@vuepress/last-updated': {
+      transformer: (timestamp, lang) => {
+        if (lang === 'zh-CN') {
+          return moment(timestamp).tz('Asia/Shanghai').locale(lang).format('lll')
+        } else {
+          return moment(timestamp).utc().locale(lang).format('lll')
+        }
+      },
+    },
+    'vuepress-plugin-clean-urls': {
+      normalSuffix: '/',
+      indexSuffix: '/',
+      notFoundPath: '/404.html',
+    },
+    'sitemap': {
+      hostname: 'https://github.com/kenlin1',
+      dateFormatter: time => new moment(time, 'lll').toISOString(),
+    },
+    'seo': {
+      siteTitle: (_, $site) => $site.title,
+      title: $page => $page.title,
+      description: $page => $page.frontmatter.description,
+      tags: $page => $page.frontmatter.tags,
+      twitterCard: _ => '/favicon.png',
+      type: $page => ['articles', 'posts', 'blog'].some(folder => $page.regularPath.startsWith('/' + folder)) ? 'article' : 'website',
+      url: (_, $site, path) => 'https://github.com/kenlin1' + path,
+      image: ($page, $site) =>
+        $page.frontmatter.image &&
+        ($site.themeConfig.domain || '') + $page.frontmatter.image,
+      publishedAt: $page =>
+        $page.frontmatter.date && new Date($page.frontmatter.date),
+      modifiedAt: $page => $page.lastUpdated && new Date($page.lastUpdated)
+    },
+    'vuepress-plugin-smooth-scroll': {},
+    'vuepress-plugin-baidu-autopush':{},
+  },
+};
