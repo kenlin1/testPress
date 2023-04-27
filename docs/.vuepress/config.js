@@ -2,7 +2,7 @@ const moment = require('moment-timezone');
 
 module.exports = {
   title: 'Press',
-  base: '/testPress/',
+  base: '/',
   head: [
     ['link', { rel: 'icon', href: '/favicon.png' }],
   ],
